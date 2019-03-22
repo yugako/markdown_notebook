@@ -1,0 +1,107 @@
+<html>
+<head>
+  <title>Записничок на кожен день</title>
+  <!-- Icons & Stylesheets -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Alice|Shadows+Into+Light" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  
+  
+
+  <!-- Notebook app -->
+  <div id="notebook">
+    <!-- Sidebar -->
+    <aside class="side-bar">
+        <div class="toolbar">
+            <button :title='addButtonTitle' @click='addNote'>
+                <i class="material-icons">note_add</i>
+                Додати нотатку
+            </button>
+            <hr>
+        </div>
+        <div class="notes">
+            <div class="note"  
+                v-for='note of sortedNotes'
+                @click=selectNote(note) 
+                :class='{selected: note === selectedNote}'
+            >
+            <i class="material-icons" v-if='note.favorite'>star</i>
+            {{note.title}}</div>
+        </div>
+    </aside>
+    <template v-if='selectedNote'>
+        <!-- Main pane -->
+    <section class="main">
+        <div class="toolbar top">
+            <input 
+                type="text" 
+                v-model='selectedNote.title'
+                placeholder="Write note title"
+                class="edit-title"
+            >
+            <div class="tools">
+                <transition name='fade'>
+                    <div class="btn-group" v-if='showToolbar'>
+                            <button @click='favoriteNote' title="Favorite note"><i class="material-icons">{{selectedNote.favorite ? 'star' : 'star_border'}}</i></button>
+                            <button @click='removeNote' title="removeNote"><i class="material-icons">delete</i></button>
+                    </div>
+                </transition>
+                
+                <button @click='showToolbar^=true'>
+                        <i class="material-icons">more_vert</i> 
+                        <!-- /.material-icons -->
+                </button>
+            </div>
+            <!-- /.tools -->
+            
+            
+        </div>
+        <!-- /.toolbar -->
+            <textarea v-model="selectedNote.content"></textarea>
+
+            <div class="toolbar status-bar">
+                <span class="date">
+                    <span class="label">Створено:</span> <!-- /.label -->
+                    <span class="value">{{selectedNote.created | date}}</span> 
+                    <!-- /.value -->
+                </span>
+                 <!-- /.date -->
+                 <span class="lines">
+                     <span class="label">Рядків:</span> <!-- /.label -->
+                     <span class="value">
+                         {{linesCount}}
+                    </span> <!-- /.value -->
+                </span> <!-- /.lines -->
+                <span class="words">
+                    <span class="label">Слів:</span> <!-- /.label -->
+                    <span class="value">
+                        {{wordsCount}}
+                    </span> <!-- /.value -->
+                </span> <!-- /.words -->
+                <span class="characters">
+                        <span class="label">Символів:</span> <!-- /.label -->
+                        <span class="value">
+                            {{charactersCount}}
+                        </span> <!-- /.value -->
+                </span> <!-- /.characters -->
+            </div>
+            <!-- /.toolbar status-bar -->
+          </section>
+      
+          <!-- Preview pane -->
+          <aside class="preview" v-html="notePreview">
+          </aside>
+    </template>
+    
+  </div>
+  <!-- Include the library in the page -->
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/marked"></script>
+  <script src="https://unpkg.com/moment"></script>
+  <!-- Some JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
+
